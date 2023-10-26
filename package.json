@@ -1,0 +1,19 @@
+{
+  "name": "cubelaunch",
+  "version": "0.0.0",
+  "scripts": {
+    "test": ""
+  },
+  "author": "EddyerDevv",
+  "license": "MIT",
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EddyerDevv/cubelaunch-packages.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EddyerDevv/cubelaunch-packages/issues"
+  },
+  "homepage": "https://github.com/EddyerDevv/cubelaunch-packages#readme",
+  "description": ""
+}
