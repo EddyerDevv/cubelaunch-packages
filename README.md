@@ -13,17 +13,17 @@ Los paquetes CubeLaunch están diseñados para simplificar el desarrollo de lanz
 
 Apreciamos y alentamos las contribuciones de la comunidad. Si encuentras algún problema o tienes sugerencias para mejorar estos paquetes, no dudes en informarlo a través de los problemas en el repositorio correspondiente. 🤝
 
-## @cubelaunch/core 🚀
+## cubelaunch-core 🚀
 
 - Estado: ⚙️ En Construcción
 - Versión: 📦 1.0.0
 
-## @cubelaunch/installer 🛠️
+## cubelaunch-installer 🛠️
 
 - Estado: ⚙️ En Construcción
 - Versión: 📦 1.0.0
 
-## @cubelaunch/unzip 🔗
+## cubelaunch-unzip 🔗
 
 - Estado: ✅ Operativo
 - Versión: 📦 1.0.0
