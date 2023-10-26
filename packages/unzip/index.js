@@ -7,15 +7,14 @@ const yauzl = require('yauzl');
 const { fromBuffer, fromFd, open: yopen } = yauzl;
 
 /**
- * Abre un archivo zip desde diferentes fuentes.
- * @param {string | Buffer | number} target - Ruta del archivo, Buffer o descriptor de archivo.
- * @param {Object} options - Opciones para abrir el archivo zip.
- * @param {boolean} options.lazyEntries - Indica si las entradas se deben cargar de manera perezosa.
- * @param {boolean} options.autoClose - Indica si el archivo se debe cerrar automáticamente después de abrirlo.
- * @returns {Promise<ZipFile>} - Una promesa que resuelve a un objeto ZipFile.
- * @throws {Error} - Si no se puede abrir el archivo zip.
+ * Abre un archivo zip y retorna un objeto ZipFile.
+ * @param {string|Buffer|number} target - Ruta del archivo, datos en buffer o descriptor de archivo.
+ * @param {Object} options - Opciones para la apertura del archivo zip.
+ * @param {boolean} options.lazyEntries - Indica si las entradas deben cargarse de manera perezosa (por defecto: true).
+ * @param {boolean} options.autoClose - Indica si se debe cerrar automáticamente el archivo después de leerlo (por defecto: false).
+ * @returns {Promise<ZipFile>} - Una promesa que se resuelve con el objeto ZipFile.
  */
-export async function open(target, options = { lazyEntries: true, autoClose: false }) {
+async function open(target, options = { lazyEntries: true, autoClose: false }) {
   return new Promise((resolve, reject) => {
     function handleZip(err, zipfile) {
       if (err || !zipfile) {
@@ -29,27 +28,24 @@ export async function open(target, options = { lazyEntries: true, autoClose: fal
       yopen(target, options, handleZip);
     } else if (Buffer.isBuffer(target)) {
       fromBuffer(target, options, handleZip);
-    } else if (typeof target === 'number') {
-      fromFd(target, options, handleZip);
     } else {
-      reject(new Error('Tipo de objetivo no válido. Debe ser una cadena, un Buffer o un descriptor de archivo.'));
+      fromFd(target, options, handleZip);
     }
   });
 };
 
 /**
- * Abre un stream de lectura para una entrada en un archivo zip.
+ * Abre un flujo de lectura para una entrada en el archivo zip.
  * @param {ZipFile} zip - Objeto ZipFile.
- * @param {Entry} entry - Entrada a la que se abrirá el stream de lectura.
- * @param {ZipFileOptions} options - Opciones para abrir el stream de lectura (opcional).
- * @returns {Promise<Readable>} - Una promesa que resuelve a un objeto Readable.
- * @throws {Error} - Si no se puede abrir el stream de lectura.
+ * @param {Entry} entry - Entrada del archivo zip.
+ * @param {ZipFileOptions} options - Opciones para abrir el flujo de lectura (opcional).
+ * @returns {Promise<Readable>} - Una promesa que se resuelve con un flujo de lectura.
  */
-export function openEntryReadStream(zip, entry, options) {
+function openEntryReadStream(zip, entry, options) {
   return new Promise((resolve, reject) => {
     function handleStream(err, stream) {
       if (err || !stream) {
-        reject(err || new Error('¡No se puede abrir el stream de lectura!'));
+        reject(err);
       } else {
         resolve(stream);
       }
@@ -64,14 +60,13 @@ export function openEntryReadStream(zip, entry, options) {
 };
 
 /**
- * Lee el contenido de una entrada en un archivo zip.
+ * Lee el contenido de una entrada en el archivo zip.
  * @param {ZipFile} zip - Objeto ZipFile.
- * @param {Entry} entry - Entrada que se va a leer.
- * @param {ZipFileOptions} options - Opciones para abrir el stream de lectura (opcional).
- * @returns {Promise<Buffer>} - Una promesa que resuelve a un Buffer con el contenido de la entrada.
- * @throws {Error} - Si no se puede leer la entrada.
+ * @param {Entry} entry - Entrada del archivo zip.
+ * @param {ZipFileOptions} options - Opciones para la lectura (opcional).
+ * @returns {Promise<Buffer>} - Una promesa que se resuelve con el contenido de la entrada como un Buffer.
  */
-export async function readEntry(zip, entry, options) {
+async function readEntry(zip, entry, options) {
   const stream = await openEntryReadStream(zip, entry, options);
   const buffers = [];
 
@@ -85,21 +80,22 @@ export async function readEntry(zip, entry, options) {
   });
 
   return Buffer.concat(buffers);
-};
+}
 
 /**
- * Generador asíncrono para iterar sobre las entradas de un archivo zip.
- * @param {ZipFile} zip - Objeto ZipFile que se va a recorrer.
- * @returns {Object} - Un objeto que actúa como generador de entradas.
+ * Generador asíncrono para recorrer las entradas de un archivo zip.
+ * @param {ZipFile} zip - Objeto ZipFile.
+ * @yields {Entry} - Una entrada del archivo zip.
+ * @throws {any} - Error si ocurre algún problema.
+ * @returns {AsyncGenerator<yauzl.Entry, void, boolean | undefined>} - Un generador asíncrono.
  */
-export function walkEntriesGenerator(zip) {
+async function* walkEntriesGenerator(zip) {
   let ended = false;
   let error;
   let resume = () => { };
   let wait = new Promise((resolve) => {
     resume = resolve;
   });
-
   const entries = [];
 
   function onEntry(entry) {
@@ -121,52 +117,40 @@ export function walkEntriesGenerator(zip) {
     .addListener('end', onEnd)
     .addListener('error', onError);
 
-  return {
-    async next() {
-      while (!ended) {
-        if (zip.lazyEntries) {
-          zip.readEntry();
-        }
-        await wait;
-        if (error) {
-          throw error;
-        }
-        while (entries.length > 0 && !ended) {
-          ended = yield entries.pop();
-        }
-        wait = new Promise((resolve) => {
-          resume = resolve;
-        });
+  try {
+    while (!ended) {
+      if (zip.lazyEntries) {
+        zip.readEntry();
       }
-      return { done: true, value: undefined };
-    },
-    async return(value) {
-      ended = true;
-      zip.removeListener('entry', onEntry)
-        .removeListener('end', onEnd)
-        .removeListener('error', onError);
-      return { done: true, value };
-    },
-    async throw(e) {
-      ended = true;
-      error = e;
-      zip.removeListener('entry', onEntry)
-        .removeListener('end', onEnd)
-        .removeListener('error', onError);
-      return { done: true, value: undefined };
+      await wait;
+
+      if (error) {
+        throw error;
+      }
+
+      while (entries.length > 0 && !ended) {
+        ended = !!(yield entries.pop());
+      }
+
+      wait = new Promise((resolve) => {
+        resume = resolve;
+      });
     }
-  };
+  } finally {
+    zip.removeListener('entry', onEntry)
+      .removeListener('end', onEnd)
+      .removeListener('error', onError);
+  }
 };
 
 /**
- * Filtra las entradas de un archivo zip.
- * @param {ZipFile} zip - Objeto ZipFile que se va a filtrar.
- * @param {Array<string | ((entry: yauzl.Entry) => boolean)>} entries - Lista de nombres de archivo o funciones de filtrado.
- * @returns {Promise<(Entry | undefined)[]>} - Una promesa que resuelve a una lista de entradas filtradas.
+ * Filtra las entradas del archivo zip según los criterios proporcionados.
+ * @param {ZipFile} zip - Objeto ZipFile.
+ * @param {Array<string | ((entry: yauzl.Entry) => boolean)>} entries - Lista de nombres de archivo o funciones de filtro.
+ * @returns {Promise<(Entry | undefined)[]>} - Una promesa que resuelve a un array de entradas o indefinidos.
  */
-export async function filterEntries(zip, entries) {
+async function filterEntries(zip, entries) {
   const bags = entries.map(e => [e, undefined]);
-
   let remaining = entries.length;
 
   for await (const entry of walkEntriesGenerator(zip)) {
@@ -190,26 +174,29 @@ export async function filterEntries(zip, entries) {
 };
 
 /**
- * Itera sobre las entradas de un archivo zip y aplica una función de manejo a cada entrada.
- * @param {ZipFile} zip - Objeto ZipFile que se va a recorrer.
- * @param {Function} entryHandler - Función de manejo que se aplicará a cada entrada.
- * @param {boolean} lazyEntries - Indica si las entradas se deben cargar de manera perezosa.
- * @returns {Promise<void>} - Una promesa que se resuelve cuando se completa el recorrido de las entradas.
+ * Recorre las entradas del archivo zip y aplica una función de manipulación a cada una.
+ * @param {ZipFile} zip - Objeto ZipFile.
+ * @param {(entry: Entry) => Promise<boolean> | boolean | void} entryHandler - Función de manipulación de entradas.
+ * @returns {Promise<void>} - Una promesa que se resuelve una vez completado el recorrido.
  */
-export async function walkEntries(zip, entryHandler, lazyEntries = true) {
-  const itr = walkEntriesGenerator(zip, lazyEntries);
+async function walkEntries(zip, entryHandler) {
+  const itr = walkEntriesGenerator(zip);
 
   for await (const entry of itr) {
-    await entryHandler(entry);
+    const result = await entryHandler(entry);
+
+    if (result) {
+      break;
+    }
   }
 };
 
 /**
  * Crea un registro de entradas a partir de una lista de entradas.
- * @param {Entry[]} entries - Lista de entradas.
- * @returns {Record<string, Entry>} - Un registro donde las claves son los nombres de archivo y los valores son las entradas correspondientes.
+ * @param {Entry[]} entries - Lista de entradas del archivo zip.
+ * @returns {Record<string, Entry>} - Un registro de entradas con los nombres de archivo como claves.
  */
-export function getEntriesRecord(entries) {
+function getEntriesRecord(entries) {
   const record = {};
 
   for (const entry of entries) {
@@ -217,14 +204,14 @@ export function getEntriesRecord(entries) {
   }
 
   return record;
-};
+}
 
 /**
- * Lee todas las entradas de un archivo zip.
+ * Lee todas las entradas del archivo zip y las devuelve como una lista.
  * @param {ZipFile} zipFile - Objeto ZipFile.
  * @returns {Promise<Entry[]>} - Una promesa que resuelve a una lista de entradas.
  */
-export async function readAllEntries(zipFile) {
+async function readAllEntries(zipFile) {
   const entries = [];
 
   for await (const entry of walkEntriesGenerator(zipFile)) {
@@ -233,3 +220,14 @@ export async function readAllEntries(zipFile) {
 
   return entries;
 };
+
+module.exports = {
+  open,
+  openEntryReadStream,
+  readAllEntries,
+  getEntriesRecord,
+  walkEntries,
+  filterEntries,
+  walkEntriesGenerator,
+  readEntry
+}
