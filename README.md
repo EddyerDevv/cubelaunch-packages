@@ -26,7 +26,7 @@ Apreciamos y alentamos las contribuciones de la comunidad. Si encuentras algún 
 ## cubelaunch-unzip 🔗
 
 - Estado: ✅ Operativo
-- Versión: 📦 1.0.0
+- Versión: 📦 [![Versión en npm](https://img.shields.io/npm/v/cubelaunch-unzip.svg)](https://www.npmjs.com/package/cubelaunch-unzip)
 
 
 ¡Esperamos que crees los mejores lanzadores con estos paquetes para tu Launcher de Minecraft! 🎮

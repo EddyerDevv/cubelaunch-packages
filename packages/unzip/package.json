@@ -1,6 +1,6 @@
 {
   "name": "cubelaunch-unzip",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Una interfaz fácil de descomprimir basada en yauzl.",
   "main": "index.js",
   "scripts": {
