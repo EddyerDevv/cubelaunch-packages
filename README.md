@@ -21,7 +21,7 @@ Apreciamos y alentamos las contribuciones de la comunidad. Si encuentras algún 
 ## cubelaunch-installer 🛠️
 
 - Estado: ⚙️ En Construcción
-- Versión: 📦 1.0.0
+- Versión: 📦 1.0.1
 
 ## cubelaunch-unzip 🔗
 
