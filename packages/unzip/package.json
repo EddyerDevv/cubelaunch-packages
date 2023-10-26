@@ -1,6 +1,6 @@
 {
   "name": "cubelaunch-unzip",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Una interfaz fácil de descomprimir basada en yauzl.",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,6 @@
   },
   "homepage": "https://github.com/EddyerDevv/cubelaunch-packages#readme",
   "dependencies": {
-    "yauzl": "^2.10.0"
+    "yauzl": "2.10.0"
   }
 }
