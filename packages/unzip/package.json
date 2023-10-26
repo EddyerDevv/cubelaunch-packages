@@ -1,0 +1,29 @@
+{
+  "name": "@cubelaunch/unzip",
+  "version": "1.0.0",
+  "description": "Una interfaz fácil de descomprimir basada en yauzl.",
+  "main": "index.js",
+  "scripts": {
+    "publish": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EddyerDevv/cubelaunch-packages.git"
+  },
+  "keywords": [
+    "nodejs",
+    "yauzl",
+    "unzip",
+    "zlib",
+    "extract"
+  ],
+  "author": "EddyerDevv",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EddyerDevv/cubelaunch-packages/issues"
+  },
+  "homepage": "https://github.com/EddyerDevv/cubelaunch-packages#readme",
+  "dependencies": {
+    "yauzl": "^2.10.0"
+  }
+}

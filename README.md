@@ -18,13 +18,15 @@ Apreciamos y alentamos las contribuciones de la comunidad. Si encuentras algún 
 - Estado: ⚙️ En Construcción
 - Versión: 📦 1.0.0
 
-El paquete `@cubelaunch/core` proporciona las funciones esenciales para el lanzamiento del juego Minecraft. Ofrece herramientas vitales para la construcción de un lanzador robusto y confiable. ⚙️
-
 ## @cubelaunch/installer 🛠️
 
 - Estado: ⚙️ En Construcción
 - Versión: 📦 1.0.0
 
-El paquete `@cubelaunch/installer` mejora el proceso de instalación de versiones de Minecraft como Vanilla, Forge, OptiFine, Fabric y otros complementos. Con esta herramienta, puedes estar seguro de que la instalación de estas versiones se realizará de manera eficiente y sin problemas. 🛠️
+## @cubelaunch/unzip 🔗
+
+- Estado: ✅ Operativo
+- Versión: 📦 1.0.0
+
 
 ¡Esperamos que crees los mejores lanzadores con estos paquetes para tu Launcher de Minecraft! 🎮
