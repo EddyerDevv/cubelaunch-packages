@@ -1,8 +1,8 @@
 # Módulo de Descompresión
 
-[![Versión en npm](https://img.shields.io/npm/v/@cubelaunch/unzip.svg)](https://www.npmjs.com/package/@cubelaunch/unzip)
-[![Descargas](https://img.shields.io/npm/dm/@cubelaunch/unzip.svg)](https://npmjs.com/@cubelaunch/unzip)
-[![Tamaño de Instalación](https://packagephobia.now.sh/badge?p=@cubelaunch/unzip)](https://packagephobia.now.sh/result?p=@cubelaunch/unzip)
+[![Versión en npm](https://img.shields.io/npm/v/cubelaunch-unzip.svg)](https://www.npmjs.com/package/cubelaunch-unzip)
+[![Descargas](https://img.shields.io/npm/dm/cubelaunch-unzip.svg)](https://npmjs.com/cubelaunch-unzip)
+[![Tamaño de Instalación](https://packagephobia.now.sh/badge?p=cubelaunch-unzip)](https://packagephobia.now.sh/result?p=cubelaunch-unzip)
 [![Licencia](https://img.shields.io/npm/l/@xmcl/core.svg)](https://github.com/EddyerDevv/cubelaunch-packages/blob/master/LICENSE)
 
 Un sencillo envoltorio para el descompresor de yauzl en Node.js.
