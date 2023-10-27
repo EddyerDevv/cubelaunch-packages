@@ -1,1 +1,0 @@
-const { open } = require("./index.js");
