@@ -1,6 +1,6 @@
 declare module "cubelaunch-zip" {
-  import { Entry, Readable, ZipFileOptions, ZipFile, Options } from 'yauzl';
-  export { Readable } from 'yauzl';
+  import { Entry, ZipFileOptions, ZipFile, Options } from 'yauzl';
+  import { Readable } from 'stream';
 
   function open(target: string | Buffer | number, options?: Options): Promise<ZipFile>;
   function openEntryReadStream(zip: ZipFile, entry: Entry, options?: ZipFileOptions): Promise<Readable>;
@@ -9,5 +9,5 @@ declare module "cubelaunch-zip" {
   function filterEntries(zip: ZipFile, entries: Array<string | ((entry: Entry) => boolean)>): Promise<(Entry | undefined)[]>;
   function walkEntries(zip: ZipFile, entryHandler: (entry: Entry) => Promise<boolean> | boolean | void): Promise<void>;
   function readAllEntries(zipFile: ZipFile): Promise<Entry[]>;
-  async function* walkEntriesGenerator(zip: ZipFile): AsyncGenerator<Entry, void, boolean | undefined>;
-};
+  function walkEntriesGenerator(zip: ZipFile): AsyncGenerator<Entry, void, boolean | undefined>;
+}

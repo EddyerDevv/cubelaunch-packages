@@ -3,7 +3,6 @@
  * @license MIT
  */
 
-
 const { join } = require('path');
 
 class MinecraftFolder {

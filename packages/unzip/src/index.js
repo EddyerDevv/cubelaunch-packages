@@ -1,10 +1,18 @@
-/**
- * @author EddyerDevv - Linsx Studios
- * @license MIT
- */
+/* @Dependencias */
+const { fromBuffer, fromFd, open: yopen, ZipFile, Entry } = require('yauzl');
+const { Readable } = require("stream");
 
-const yauzl = require('yauzl');
-const { fromBuffer, fromFd, open: yopen } = yauzl;
+/* @Exportacion */
+module.exports = {
+  open,
+  openEntryReadStream,
+  readAllEntries,
+  getEntriesRecord,
+  walkEntries,
+  filterEntries,
+  walkEntriesGenerator,
+  readEntry
+};
 
 /**
  * Abre un archivo zip y retorna un objeto ZipFile.
@@ -24,12 +32,16 @@ async function open(target, options = { lazyEntries: true, autoClose: false }) {
       }
     }
 
-    if (typeof target === 'string') {
-      yopen(target, options, handleZip);
-    } else if (Buffer.isBuffer(target)) {
-      fromBuffer(target, options, handleZip);
-    } else {
-      fromFd(target, options, handleZip);
+    try {
+      if (typeof target === 'string') {
+        yopen(target, options, handleZip);
+      } else if (Buffer.isBuffer(target)) {
+        fromBuffer(target, options, handleZip);
+      } else {
+        fromFd(target, options, handleZip);
+      }
+    } catch (err) {
+      reject(err);
     }
   });
 };
@@ -87,7 +99,7 @@ async function readEntry(zip, entry, options) {
  * @param {ZipFile} zip - Objeto ZipFile.
  * @yields {Entry} - Una entrada del archivo zip.
  * @throws {any} - Error si ocurre algún problema.
- * @returns {AsyncGenerator<yauzl.Entry, void, boolean | undefined>} - Un generador asíncrono.
+ * @returns {AsyncGenerator<Entry, void, boolean | undefined>} - Un generador asíncrono.
  */
 async function* walkEntriesGenerator(zip) {
   let ended = false;
@@ -146,7 +158,7 @@ async function* walkEntriesGenerator(zip) {
 /**
  * Filtra las entradas del archivo zip según los criterios proporcionados.
  * @param {ZipFile} zip - Objeto ZipFile.
- * @param {Array<string | ((entry: yauzl.Entry) => boolean)>} entries - Lista de nombres de archivo o funciones de filtro.
+ * @param {Array<string | ((entry: Entry) => boolean)>} entries - Lista de nombres de archivo o funciones de filtro.
  * @returns {Promise<(Entry | undefined)[]>} - Una promesa que resuelve a un array de entradas o indefinidos.
  */
 async function filterEntries(zip, entries) {
@@ -220,14 +232,3 @@ async function readAllEntries(zipFile) {
 
   return entries;
 };
-
-module.exports = {
-  open,
-  openEntryReadStream,
-  readAllEntries,
-  getEntriesRecord,
-  walkEntries,
-  filterEntries,
-  walkEntriesGenerator,
-  readEntry
-}

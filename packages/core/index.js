@@ -13,7 +13,7 @@ module.exports = {
   ...require('./files/platform'),
   ...require('./files/folder'),
   ...require('./files/diagnose'),
+  ...require('./files/version'),
   checksum: require('./files/utils').checksum,
   // ...require('./launch'),
-  // ...require('./version'),
 };

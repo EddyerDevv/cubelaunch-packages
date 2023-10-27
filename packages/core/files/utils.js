@@ -3,7 +3,6 @@
  * @license MIT
  */
 
-
 const { constants, createReadStream } = require('fs');
 const { createHash } = require('crypto');
 const { pipeline } = require('stream/promises');

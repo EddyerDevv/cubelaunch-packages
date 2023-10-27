@@ -1,11 +1,8 @@
 {
   "name": "cubelaunch-unzip",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Una interfaz fácil de descomprimir basada en yauzl.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/EddyerDevv/cubelaunch-packages.git"

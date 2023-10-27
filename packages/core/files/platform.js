@@ -3,7 +3,6 @@
  * @license MIT
  */
 
-
 const os = require("os");
 
 /**

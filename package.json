@@ -12,5 +12,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/EddyerDevv/cubelaunch-packages.git"
+  },
+  "dependencies": {
+    "@types/yauzl": "^2.10.2"
   }
 }
