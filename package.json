@@ -15,5 +15,8 @@
   },
   "dependencies": {
     "@types/yauzl": "^2.10.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
