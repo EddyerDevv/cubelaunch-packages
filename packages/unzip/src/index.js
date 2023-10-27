@@ -1,6 +1,5 @@
 /* @Dependencias */
-const { fromBuffer, fromFd, open: yopen, ZipFile, Entry } = require('yauzl');
-const { Readable } = require("stream");
+const { fromBuffer, fromFd, open: yopen } = require('yauzl');
 
 /* @Exportacion */
 module.exports = {
@@ -44,7 +43,7 @@ async function open(target, options = { lazyEntries: true, autoClose: false }) {
       reject(err);
     }
   });
-};
+}
 
 /**
  * Abre un flujo de lectura para una entrada en el archivo zip.
@@ -69,7 +68,7 @@ function openEntryReadStream(zip, entry, options) {
       zip.openReadStream(entry, handleStream);
     }
   });
-};
+}
 
 /**
  * Lee el contenido de una entrada en el archivo zip.
@@ -153,7 +152,7 @@ async function* walkEntriesGenerator(zip) {
       .removeListener('end', onEnd)
       .removeListener('error', onError);
   }
-};
+}
 
 /**
  * Filtra las entradas del archivo zip según los criterios proporcionados.
@@ -183,7 +182,7 @@ async function filterEntries(zip, entries) {
   }
 
   return bags.map(b => b[1]);
-};
+}
 
 /**
  * Recorre las entradas del archivo zip y aplica una función de manipulación a cada una.
@@ -201,7 +200,7 @@ async function walkEntries(zip, entryHandler) {
       break;
     }
   }
-};
+}
 
 /**
  * Crea un registro de entradas a partir de una lista de entradas.
@@ -231,4 +230,4 @@ async function readAllEntries(zipFile) {
   }
 
   return entries;
-};
+}
